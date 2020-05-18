@@ -1,14 +1,14 @@
 import { DbMockConfig, DbMockTableConfig } from './types';
 import fs = require('fs');
 
-type ICreateTableFile = <T>(config: DbMockTableConfig<T>) => Promise<{
+type IAddTable = <T>(config: DbMockTableConfig<T>) => Promise<{
   get: (id?: string) => T | T[],
   put: (id: string, data: T) => T
 }>;
 
 // Bootstrap: creates the db folder and files
-export const bootstrap = async ({ path }: DbMockConfig): Promise<{
-  createTableFile: ICreateTableFile
+const DbMock = async ({ path }: DbMockConfig): Promise<{
+  addTable: IAddTable
 }> => {
   // generic function that reads from a "table" file
   const getObject = <T>(path: string): { [x: string]: T } => JSON.parse(fs.readFileSync(path, 'utf-8'));
@@ -17,7 +17,7 @@ export const bootstrap = async ({ path }: DbMockConfig): Promise<{
   const putObject = (path: string, data: any) =>
     fs.writeFileSync(path, JSON.stringify(data, null, ' '), 'utf-8');
 
-  const createTableFile: ICreateTableFile = async <T>({ name, defaultData }: DbMockTableConfig<T>) => {
+  const addTable: IAddTable = async <T>({ name, defaultData }: DbMockTableConfig<T>) => {
     const tablePath = `${path}/${name.trim()}.json`;
 
     const get = (id?: string): T | T[] =>
@@ -45,5 +45,7 @@ export const bootstrap = async ({ path }: DbMockConfig): Promise<{
     fs.mkdirSync(path);
   }
 
-  return { createTableFile };
+  return { addTable };
 };
+
+export default DbMock;

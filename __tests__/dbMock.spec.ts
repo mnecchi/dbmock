@@ -1,5 +1,4 @@
-import DbMock from '../src';
-import { DbMockConfig } from '../src/types';
+import DbMock, { DbMockConfig } from '../src';
 
 const testConfig: DbMockConfig = {
   path: './db'
