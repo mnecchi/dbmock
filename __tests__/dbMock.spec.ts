@@ -1,5 +1,5 @@
 import DbMock, { DbMockConfig, DbMockTableConfig } from '../src';
-import * as fs from 'fs';
+import * as fs from 'fs'; 
 
 const jsonFormatter = (o: any) => JSON.stringify(o);
 
@@ -65,9 +65,9 @@ describe('add a new table', () => {
 
     const mockedWriteFile = jest.spyOn(fs, 'writeFileSync');
     mockedExists.mockImplementationOnce(() => false);
-    testTableConfig.defaultData = [{ id: 'data_id', value: 'test'}, { id: 'data_id2', value: 'test2'}];
-    const expectedData = testTableConfig.defaultData.reduce((acc, defaultData) => {
-      acc[defaultData.id] = defaultData;
+    testTableConfig.seed = [{ id: 'data_id', value: 'test'}, { id: 'data_id2', value: 'test2'}];
+    const expectedData = testTableConfig.seed.reduce((acc, seed) => {
+      acc[seed.id] = seed;
       return acc;
     }, {} as { [id: string]: TestTableData});
 
@@ -85,5 +85,71 @@ describe('add a new table', () => {
     mockedExists.mockImplementationOnce(() => true);
     await addTable(testTableConfig);
     expect(mockedWriteFile).not.toHaveBeenCalled();
+  });
+});
+
+describe('get data from the db', () => {
+  const testObject1 = { id: '1', value: 'test1' };
+  const testObject2 = { id: '2', value: 'test2' };
+
+  it('should return an array of objects if id is not passed', async () => {
+    jest.spyOn(fs, 'readFileSync').mockImplementationOnce(() => JSON.stringify({
+      '1': testObject1,
+      '2': testObject2,
+    }));
+
+    const { addTable } = await DbMock(testConfig);
+    const { get } = await addTable({ ...testTableConfig, seed: [testObject1, testObject2] });
+
+    expect(await get()).toEqual([testObject1, testObject2]);
+  });
+
+  it('should return an object with the specified id', async () => {
+    jest.spyOn(fs, 'readFileSync').mockImplementationOnce(() => JSON.stringify({
+      '1': testObject1,
+      '2': testObject2,
+    }));
+
+    const { addTable } = await DbMock(testConfig);
+    const { get } = await addTable({ ...testTableConfig, seed: [testObject1, testObject2] });
+
+    expect(await get('2')).toEqual(testObject2);
+  });
+});
+
+describe('save data on the db', () => {
+  const seed = [{ id: '1', value: 'test1' }];
+  const mockedWriteFile = jest.spyOn(fs, 'writeFileSync');
+
+  it('should add the object to the table file', async () => {
+    jest.spyOn(fs, 'readFileSync').mockImplementation(() => JSON.stringify({
+      '1': seed[0]
+    }));
+
+    const { addTable } = await DbMock(testConfig);
+    const { put } = await addTable({ ...testTableConfig, seed });
+  
+    const testData = { id: '2', value: 'test2' };
+    mockedWriteFile.mockClear();
+
+    const data = await put('2', testData);
+    expect(data).toEqual(testData);
+    expect(mockedWriteFile).toHaveBeenLastCalledWith(`${testConfig.path}/${testTableConfig.name}.json`, jsonFormatter({ '1': seed[0], '2': testData }), 'utf-8');
+  });
+
+  it('should update the object if it exists and write it to the table file', async () => {
+    jest.spyOn(fs, 'readFileSync').mockImplementation(() => JSON.stringify({
+      '1': seed[0]
+    }));
+
+    const { addTable } = await DbMock(testConfig);
+    const { put } = await addTable({ ...testTableConfig, seed });
+  
+    const testData = { id: '1', value: 'test1new' };
+    mockedWriteFile.mockClear();
+
+    const data = await put('1', testData);
+    expect(data).toEqual(testData);
+    expect(mockedWriteFile).toHaveBeenLastCalledWith(`${testConfig.path}/${testTableConfig.name}.json`, jsonFormatter({ '1': testData }), 'utf-8');
   });
 });
