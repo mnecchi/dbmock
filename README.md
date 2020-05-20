@@ -1,4 +1,4 @@
-# dbmock
+# dev-dbmock
 
 ## a simple json based db for development environments
 
@@ -10,11 +10,11 @@ When the object is stored in the db an `id` is created automatically (in a guid-
 ### install
 
 ```sh
-npm install --save-dev dbmock
+npm install --save-dev dev-dbmock
 ```
 or
 ```
-yarn add --dev dbmock
+yarn add --dev dev-dbmock
 ```
 
 ### usage
@@ -23,7 +23,7 @@ The first thing you need to do is creating the db like this:
 
 *Typescript*:
 ```ts
-import DbMock, { DbMockConfig, DbMockTableConfig } from 'dbmock';
+import DbMock, { DbMockConfig, DbMockTableConfig } from 'dev-dbmock';
 
 const config: DbMockConfig = { path: 'db/data' };
 const { addTable } = await DbMock(config);
@@ -31,7 +31,7 @@ const { addTable } = await DbMock(config);
 
 *Javascript*:
 ```js
-import DbMock from 'dbmock';
+import DbMock from 'dev-dbmock';
 
 const config = { path: 'db/data' };
 const { addTable } = await DbMock(config);

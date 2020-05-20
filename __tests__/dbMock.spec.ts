@@ -25,7 +25,7 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-describe('dbmock bootstrapping', () => {
+describe('dev-dbmock bootstrapping', () => {
   it('should create the db folder if it does not exist', async () => {
     jest.spyOn(fs, 'existsSync').mockImplementationOnce(() => false);
     const mockedMkdir = jest.spyOn(fs, 'mkdirSync');
