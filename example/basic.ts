@@ -1,5 +1,5 @@
 // tslint:disable: no-console
-import DbMock from '../src/db-mock';
+import DbMock from '../src/dbmock';
 
 (async () => {
     interface Person {
