@@ -10,6 +10,10 @@
   "keywords": ["DB", "Database", "Mock", "Dev", "Development"],
   "author": "Massimo Necchi",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mnecchi/dev-dbmock.git"
+  },
   "scripts": {
     "test": "jest --config jestconfig.json",
     "build": "tsc",
