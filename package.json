@@ -1,19 +1,26 @@
 {
   "name": "db-mock",
   "version": "0.0.1",
-  "description": "A basic db mock for development environment",
-  "main": "index.js",
+  "description": "A basic db mock for development environments",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "files": [
     "lib/**/*"
   ],
+  "keywords": ["DB", "Database", "Mock", "Dev", "Development"],
+  "author": "Massimo Necchi",
+  "license": "ISC",
   "scripts": {
     "test": "jest --config jestconfig.json",
     "build": "tsc",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
-    "lint": "tslint -p tsconfig.json"
+    "lint": "tslint -p tsconfig.json",
+    "prepare" : "npm run build",
+    "prepublishOnly" : "npm test && npm run lint",
+    "preversion" : "npm run lint",
+    "version" : "npm run format && git add -A src",
+    "postversion" : "git push && git push --tags"
   },
-  "author": "Massimo Necchi",
-  "license": "ISC",
   "devDependencies": {
     "@types/jest": "^25.2.2",
     "@types/node": "^14.0.1",
