@@ -3,4 +3,7 @@ export interface DbMockConfig {
   jsonFormatter?: (o: any) => string;
 }
 
-export interface DbMockTableConfig<T> { name: string; seed?: (T & { id: string })[] }
+export interface DbMockTableConfig<T> {
+  name: string;
+  seed?: (T & { id: string })[];
+}
