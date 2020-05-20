@@ -31,7 +31,7 @@ describe('db-mock bootstrapping', () => {
     const mockedMkdir = jest.spyOn(fs, 'mkdirSync');
 
     await DbMock(testConfig);
-    expect(mockedMkdir).toHaveBeenCalledWith(testConfig.path);
+    expect(mockedMkdir).toHaveBeenCalledWith(testConfig.path, { recursive: true });
   });
 
   it('should not create the db folder if it does exist already', async () => {
